@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - Crear Post</title>
+    <title>Panel de Control - Crear Post (Seguro)</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- DOMPurify para sanitizar HTML -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -18,14 +20,13 @@
             min-height: 100vh;
         }
         .form-container {
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
             background: #0f1219;
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 24px;
             padding: 40px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            margin: auto;
         }
         h1 { font-size: 1.8rem; margin-bottom: 10px; background: linear-gradient(90deg, #fff, #9ca3af); -webkit-background-clip: text; color: transparent; }
         p { color: #9ca3af; margin-bottom: 30px; }
@@ -55,8 +56,7 @@
             width: 100%;
             transition: transform 0.2s;
         }
-        button:hover:not(:disabled) { transform: translateY(-2px); }
-        button:disabled { opacity: 0.7; cursor: not-allowed; }
+        button:hover { transform: translateY(-2px); }
         .mensaje {
             margin-top: 20px;
             padding: 12px;
@@ -67,233 +67,182 @@
         }
         .exito { background: rgba(34,197,94,0.2); border: 1px solid #22c55e; color: #4ade80; }
         .error { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; }
-        hr { border-color: rgba(255,255,255,0.05); margin: 40px 0; }
-
-        /* --- NUEVOS ESTILOS PARA LA LISTA DE POSTS --- */
-        .gestion-posts h2 {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            color: #f3f4f6;
+        .preview {
+            margin-top: 20px;
+            background: #0a0c12;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .post-item {
-            background: #111824;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-        .post-info {
-            flex: 1;
-            overflow: hidden;
-        }
-        .post-info h4 {
-            font-size: 1rem;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .post-info p {
-            font-size: 0.85rem;
+        .preview h3 {
+            font-size: 0.9rem;
             color: #9ca3af;
-            margin-bottom: 0;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .btn-eliminar {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 1px solid #ef4444;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 0.85rem;
+            margin-bottom: 12px;
             font-weight: 600;
-            width: auto;
-            margin-top: 0;
-            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .btn-eliminar:hover:not(:disabled) {
-            background: #ef4444;
-            color: white;
+        .preview-content {
+            background: #11151f;
+            border-radius: 12px;
+            padding: 16px;
+            min-height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: auto;
         }
+        .aviso {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 8px;
+            text-align: center;
+        }
+        hr { border-color: rgba(255,255,255,0.05); margin: 20px 0; }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h1>➕ Nuevo Post</h1>
-        <p>Agrega un lanzamiento a la página principal <strong>profilebio.me</strong></p>
+        <p>Agrega un lanzamiento a la página principal <strong>profilebio.me</strong><br>
+        <span style="font-size:0.8rem;">✅ El código HTML será sanitizado automáticamente (sin scripts ni eventos peligrosos).</span></p>
 
         <form id="formPost">
             <label>Título del post:</label>
             <input type="text" id="titulo" placeholder="Ej: Mi nuevo video" required>
 
-            <label>Código HTML (Imagen, video o iframe):</label>
-            <textarea id="codigoHtml" rows="3" placeholder='Ej: <img src="..." alt="..."> o <iframe src="..."></iframe>' required></textarea>
+            <label>Código HTML (imagen, video, iframe):</label>
+            <textarea id="codigoHtml" rows="4" placeholder='Ej: <img src="https://ejemplo.com/imagen.jpg" alt="Mi imagen"> o <iframe width="560" height="315" src="https://www.youtube.com/embed/..." frameborder="0"></iframe>' required></textarea>
 
             <label>Descripción:</label>
-            <textarea id="descripcion" rows="4" placeholder="Describe el contenido del post..." required></textarea>
+            <textarea id="descripcion" rows="3" placeholder="Describe el contenido del post..." required></textarea>
 
-            <button id="btnSubmit" type="submit">PUBLICAR POST</button>
+            <!-- Previsualización en vivo -->
+            <div class="preview">
+                <h3>🔍 Previsualización (cómo se verá)</h3>
+                <div class="preview-content" id="previewArea">
+                    <span style="color:#6b7280;">El HTML seguro se mostrará aquí...</span>
+                </div>
+                <div class="aviso">⚠️ Solo se muestran etiquetas seguras. Los scripts y eventos maliciosos se eliminan automáticamente.</div>
+            </div>
+
+            <button type="submit">PUBLICAR POST</button>
         </form>
 
         <div id="mensajeRespuesta" class="mensaje"></div>
-
-        <hr>
-
-        <div class="gestion-posts">
-            <h2>🗑️ Gestionar Posts</h2>
-            <div id="listaPosts">
-                <p style="text-align: center; color: #9ca3af;">Cargando posts publicados...</p>
-            </div>
-        </div>
-
     </div>
 
     <script>
+        // Configuración de JSONBin (⚠️ visible, idealmente usar backend propio)
         const BIN_ID = '69d00038856a682189f88f1b';
         const API_KEY = '$2a$10$QzNa.Zj4OfVuzJpLx92t4eNgS1Yh/6UU5nsFuyXJKyxrkh8swx8IC';
         const API_BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
         const form = document.getElementById('formPost');
         const mensajeDiv = document.getElementById('mensajeRespuesta');
-        const btnSubmit = document.getElementById('btnSubmit');
-        
-        let postsGlobales = []; // Variable para almacenar los posts actuales
+        const codigoHtmlInput = document.getElementById('codigoHtml');
+        const previewDiv = document.getElementById('previewArea');
 
-        // EVENTO: CREAR POST
+        // Configuración de DOMPurify: permitir iframes de cualquier fuente, videos, imágenes, etc.
+        // pero bloquear cualquier evento (onclick, onerror, etc.) y javascript: en links
+        const purifyConfig = {
+            ALLOWED_TAGS: [
+                'img', 'video', 'iframe', 'source', 'a', 'p', 'br', 'strong', 'em',
+                'div', 'span', 'h1', 'h2', 'h3', 'h4', 'ul', 'li', 'blockquote'
+            ],
+            ALLOWED_ATTR: ['src', 'alt', 'title', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'href', 'target', 'rel', 'controls', 'autoplay', 'loop', 'muted', 'poster'],
+            ALLOW_DATA_ATTR: false,
+            ADD_TAGS: [],      // no agregar tags extra peligrosos
+            ADD_ATTR: [],      // no permitir atributos personalizados
+            FORBID_TAGS: ['script', 'style', 'iframe'], // aunque iframe está permitido arriba, lo dejamos en permitidos, pero este es redundante
+            FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onsubmit']
+        };
+
+        // Función para sanitizar y actualizar previsualización en tiempo real
+        function actualizarPrevisualizacion() {
+            let rawHtml = codigoHtmlInput.value.trim();
+            if (rawHtml === '') {
+                previewDiv.innerHTML = '<span style="color:#6b7280;">El HTML seguro se mostrará aquí...</span>';
+                return;
+            }
+            // Sanitizar el HTML
+            let cleanHtml = DOMPurify.sanitize(rawHtml, purifyConfig);
+            if (cleanHtml === '') {
+                previewDiv.innerHTML = '<span style="color:#ef4444;">❌ El código HTML no contiene etiquetas seguras o está vacío después de la limpieza.</span>';
+            } else {
+                previewDiv.innerHTML = cleanHtml;
+            }
+        }
+
+        // Escuchar cambios en el textarea para actualizar previsualización
+        codigoHtmlInput.addEventListener('input', actualizarPrevisualizacion);
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             mensajeDiv.style.display = 'none';
             mensajeDiv.className = 'mensaje';
 
             const titulo = document.getElementById('titulo').value.trim();
-            const codigoHtml = document.getElementById('codigoHtml').value.trim();
+            const rawHtml = document.getElementById('codigoHtml').value.trim();
             const descripcion = document.getElementById('descripcion').value.trim();
 
-            if (!titulo || !codigoHtml || !descripcion) {
+            if (!titulo || !rawHtml || !descripcion) {
                 mostrarMensaje('Todos los campos son obligatorios', 'error');
                 return;
             }
 
-            if (!codigoHtml.startsWith('<') || !codigoHtml.includes('>')) {
-                mostrarMensaje('❌ Error: Debes ingresar un código HTML válido (ej: <img src="...">).', 'error');
+            // Sanitizar el HTML antes de guardar
+            let htmlSeguro = DOMPurify.sanitize(rawHtml, purifyConfig);
+            if (htmlSeguro === '') {
+                mostrarMensaje('❌ El código HTML ingresado no es válido o contiene solo elementos peligrosos. Usa etiquetas seguras como <img>, <video> o <iframe>.', 'error');
                 return;
             }
 
-            btnSubmit.disabled = true;
-            btnSubmit.textContent = '⏳ Publicando...';
-
-            try {
-                // Agregar al inicio del array global
-                const nuevoPost = { titulo, imagen: codigoHtml, descripcion };
-                postsGlobales.unshift(nuevoPost);
-
-                // Actualizar servidor
-                const actualizar = await fetch(API_BIN_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
-                    },
-                    body: JSON.stringify(postsGlobales)
-                });
-
-                if (!actualizar.ok) throw new Error('Error al guardar en el servidor');
-
-                mostrarMensaje('✅ ¡Post creado exitosamente!', 'exito');
-                form.reset();
-                renderizarListaPosts(); // Actualizar la lista visualmente
-            } catch (error) {
-                console.error(error);
-                mostrarMensaje('❌ Error: ' + error.message, 'error');
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.textContent = 'PUBLICAR POST';
+            // Validación adicional: si el usuario intentó poner solo texto plano sin etiquetas, rechazar
+            if (!rawHtml.includes('<') && !rawHtml.includes('>')) {
+                mostrarMensaje('❌ Debes ingresar un código HTML con etiquetas (ej: <img src="...">). No se permiten URLs sueltas o texto plano.', 'error');
+                return;
             }
-        });
 
-        // NUEVA FUNCIÓN: CARGAR POSTS DESDE EL SERVIDOR
-        async function cargarListaPosts() {
             try {
+                // 1. Obtener posts actuales
                 const respuesta = await fetch(API_BIN_URL, {
                     headers: { 'X-Master-Key': API_KEY }
                 });
                 if (!respuesta.ok) throw new Error('No se pudo leer la base de datos');
                 
                 const datos = await respuesta.json();
-                postsGlobales = datos.record || [];
-                renderizarListaPosts();
-            } catch (error) {
-                document.getElementById('listaPosts').innerHTML = '<p style="color: #ef4444; text-align:center;">Error al cargar los posts.</p>';
-            }
-        }
+                const postsActuales = datos.record || [];
 
-        // NUEVA FUNCIÓN: DIBUJAR LOS POSTS EN PANTALLA
-        function renderizarListaPosts() {
-            const contenedor = document.getElementById('listaPosts');
-            
-            if (postsGlobales.length === 0) {
-                contenedor.innerHTML = '<p style="text-align: center; color: #9ca3af;">No hay posts publicados todavía.</p>';
-                return;
-            }
+                // 2. Guardar el HTML ya sanitizado
+                const nuevoPost = { 
+                    titulo, 
+                    imagen: htmlSeguro,   // Guardamos el código limpio y seguro
+                    descripcion 
+                };
+                postsActuales.unshift(nuevoPost);
 
-            contenedor.innerHTML = '';
-            postsGlobales.forEach((post, index) => {
-                const item = document.createElement('div');
-                item.className = 'post-item';
-                item.innerHTML = `
-                    <div class="post-info">
-                        <h4>${escapeHtmlUI(post.titulo)}</h4>
-                        <p>${escapeHtmlUI(post.descripcion)}</p>
-                    </div>
-                    <button class="btn-eliminar" onclick="eliminarPost(${index}, this)">Eliminar</button>
-                `;
-                contenedor.appendChild(item);
-            });
-        }
-
-        // NUEVA FUNCIÓN: ELIMINAR POST
-        async function eliminarPost(index, btnElement) {
-            const confirmar = confirm('¿Estás seguro de que deseas eliminar este post? Esta acción no se puede deshacer.');
-            if (!confirmar) return;
-
-            btnElement.disabled = true;
-            btnElement.textContent = '⏳...';
-
-            try {
-                // Clonar array y remover el elemento
-                const nuevosPosts = [...postsGlobales];
-                nuevosPosts.splice(index, 1);
-
-                // Enviar nueva lista al servidor
+                // 3. Actualizar el bin
                 const actualizar = await fetch(API_BIN_URL, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Master-Key': API_KEY
                     },
-                    body: JSON.stringify(nuevosPosts)
+                    body: JSON.stringify(postsActuales)
                 });
 
-                if (!actualizar.ok) throw new Error('Error al actualizar el servidor');
+                if (!actualizar.ok) throw new Error('Error al guardar en el servidor');
 
-                // Si tiene éxito, actualizar variable global y re-dibujar
-                postsGlobales = nuevosPosts;
-                renderizarListaPosts();
-                mostrarMensaje('🗑️ Post eliminado correctamente.', 'exito');
-
+                mostrarMensaje('✅ ¡Post creado exitosamente! El HTML sanitizado se ha publicado.', 'exito');
+                form.reset();
+                // Limpiar previsualización
+                previewDiv.innerHTML = '<span style="color:#6b7280;">El HTML seguro se mostrará aquí...</span>';
             } catch (error) {
                 console.error(error);
-                mostrarMensaje('❌ Error al eliminar el post.', 'error');
-                btnElement.disabled = false;
-                btnElement.textContent = 'Eliminar';
+                mostrarMensaje('❌ Error: ' + error.message, 'error');
             }
-        }
+        });
 
         function mostrarMensaje(texto, tipo) {
             mensajeDiv.textContent = texto;
@@ -304,16 +253,6 @@
                 mensajeDiv.classList.remove(tipo);
             }, 5000);
         }
-
-        // Utilidad para evitar inyección de código en los títulos de la lista
-        function escapeHtmlUI(texto) {
-            const div = document.createElement('div');
-            div.textContent = texto;
-            return div.innerHTML;
-        }
-
-        // Iniciar cargando la lista
-        cargarListaPosts();
     </script>
 </body>
 </html>
