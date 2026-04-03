@@ -77,8 +77,8 @@
             <label>Título del post:</label>
             <input type="text" id="titulo" placeholder="Ej: Mi nuevo video" required>
 
-            <label>Código HTML de la imagen/contenido:</label>
-            <textarea id="codigoHtml" rows="3" placeholder='<img src="URL" alt="imagen">' required></textarea>
+            <label>Código HTML (Imagen, video o iframe):</label>
+            <textarea id="codigoHtml" rows="3" placeholder='Ej: <img src="..." alt="..."> o <iframe src="..."></iframe>' required></textarea>
 
             <label>Descripción:</label>
             <textarea id="descripcion" rows="4" placeholder="Describe el contenido del post..." required></textarea>
@@ -90,7 +90,7 @@
     </div>
 
     <script>
-        const BIN_ID = '69cff65d856a682189f868bf';
+        const BIN_ID = '69d00038856a682189f88f1b';
         const API_KEY = '$2a$10$QzNa.Zj4OfVuzJpLx92t4eNgS1Yh/6UU5nsFuyXJKyxrkh8swx8IC';
         const API_BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
@@ -103,11 +103,18 @@
             mensajeDiv.className = 'mensaje';
 
             const titulo = document.getElementById('titulo').value.trim();
-            const imagen = document.getElementById('codigoHtml').value.trim();
+            const codigoHtml = document.getElementById('codigoHtml').value.trim();
             const descripcion = document.getElementById('descripcion').value.trim();
 
-            if (!titulo || !imagen || !descripcion) {
+            if (!titulo || !codigoHtml || !descripcion) {
                 mostrarMensaje('Todos los campos son obligatorios', 'error');
+                return;
+            }
+
+            // --- VALIDACIÓN ESTRICTA DE HTML ---
+            // Verifica que el texto empiece con "<" y contenga un ">"
+            if (!codigoHtml.startsWith('<') || !codigoHtml.includes('>')) {
+                mostrarMensaje('❌ Error: Debes ingresar un código HTML válido (ej: <img src="...">). No se permiten URLs sueltas.', 'error');
                 return;
             }
 
@@ -121,8 +128,8 @@
                 const datos = await respuesta.json();
                 const postsActuales = datos.record || [];
 
-                // 2. Agregar nuevo post (el campo "imagen" ahora lleva el HTML puro)
-                const nuevoPost = { titulo, imagen, descripcion };
+                // 2. Agregar nuevo post (lo guardamos en la propiedad "imagen" para mantener compatibilidad con tu BD)
+                const nuevoPost = { titulo, imagen: codigoHtml, descripcion };
                 postsActuales.unshift(nuevoPost);
 
                 // 3. Actualizar el bin
