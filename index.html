@@ -3,256 +3,755 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - Crear Post (Seguro)</title>
+    <title>ProfileBio.me - Diseño de Banners Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <!-- DOMPurify para sanitizar HTML -->
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.4/dist/purify.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- VARIABLES GLOBALES (TEMA DARK PREMIUM) --- */
+        :root {
+            --fondo-principal: #050507;
+            --fondo-secundario: #0a0a0e;
+            --blanco: #ffffff;
+            --texto-oscuro: #f3f4f6;
+            --texto-claro: #9ca3af;
+            --gris-bordes: rgba(255, 255, 255, 0.08);
+            --azul-principal: #0ea5e9;
+            --azul-hover: #38bdf8;
+            --azul-oscuro: #0f172a;
+
+            /* Colores Plataformas de Música */
+            --gem-space: #4285F4;  
+            --gem-time: #1DB954;   
+            --gem-mind: #FFD700;   
+            --gem-reality: #FF0000;
+            --gem-soul: #00F2FE;   
+            --gem-power: #A238FF;  
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background: #0a0a0e;
             font-family: 'Poppins', sans-serif;
-            color: #f3f4f6;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            background-color: var(--fondo-principal);
+            color: var(--texto-oscuro);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
-        .form-container {
-            max-width: 700px;
-            width: 100%;
-            background: #0f1219;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+
+        a { text-decoration: none; }
+
+        /* --- ANIMACIONES GLOBALES --- */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
         }
-        h1 { font-size: 1.8rem; margin-bottom: 10px; background: linear-gradient(90deg, #fff, #9ca3af); -webkit-background-clip: text; color: transparent; }
-        p { color: #9ca3af; margin-bottom: 30px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; margin-top: 20px; }
-        input, textarea {
-            width: 100%;
-            background: #111824;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-family: 'Poppins', sans-serif;
-            color: white;
-            font-size: 1rem;
-            resize: vertical;
+
+        @keyframes moveBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        input:focus, textarea:focus { outline: none; border-color: #0ea5e9; }
-        button {
-            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
-            color: white;
-            border: none;
+
+        /* --- SECCIÓN HERO --- */
+        .hero {
+            background: radial-gradient(circle at top, #0f172a 0%, var(--fondo-principal) 70%);
+            color: var(--blanco);
+            text-align: center;
+            padding: 120px 20px 80px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--gris-bordes);
+        }
+
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMDIiLz4KPC9zdmc+') repeat;
+            opacity: 0.5; z-index: 1;
+        }
+
+        .logo {
+            font-size: 36px; font-weight: 800; letter-spacing: -1.5px;
+            margin-bottom: 30px; position: relative; z-index: 2;
+        }
+
+        .logo span { 
+            color: transparent;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800;
+            line-height: 1.1; text-transform: uppercase; max-width: 1000px;
+            margin: 0 auto 25px; position: relative; z-index: 2;
+            background: linear-gradient(to bottom right, #ffffff, #9ca3af);
+            -webkit-background-clip: text; color: transparent;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem; font-weight: 600; color: #d1d5db;
+            padding: 10px 15px; display: inline-block; max-width: 700px;
+            margin: 0 auto 40px; position: relative; z-index: 2; letter-spacing: 0.5px;
+        }
+
+        .btn-principal {
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: var(--blanco);
+            padding: 18px 50px; border-radius: 50px; font-weight: 800; font-size: 1.1rem;
+            border: none; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3); text-transform: uppercase;
+            letter-spacing: 1px; position: relative; z-index: 2;
+        }
+
+        .btn-principal:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(14, 165, 233, 0.5);
+            background: linear-gradient(135deg, #38bdf8, #60a5fa);
+        }
+
+        /* --- SECCIÓN PORTAFOLIO --- */
+        .portfolio-section {
+            background-color: var(--fondo-principal); padding: 100px 20px;
+            position: relative; overflow: hidden;
+        }
+
+        .portfolio-header { text-align: center; margin-bottom: 60px; position: relative; z-index: 2; }
+        .portfolio-header h2 {
+            font-size: 2.5rem; font-weight: 800; color: var(--blanco); text-transform: uppercase;
+            margin-bottom: 15px; background: linear-gradient(90deg, #fff, #a1a1aa);
+            -webkit-background-clip: text; color: transparent;
+        }
+        .portfolio-header p { color: var(--texto-claro); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+        .aviso-ejemplo {
+            color: var(--azul-principal);
+            font-size: 0.85rem;
+            text-align: center;
+            max-width: 600px;
+            margin: 10px auto 0;
+            background: rgba(14, 165, 233, 0.1);
+            padding: 8px 16px;
             border-radius: 40px;
-            padding: 14px 30px;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 30px;
-            width: 100%;
-            transition: transform 0.2s;
-        }
-        button:hover { transform: translateY(-2px); }
-        .mensaje {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 12px;
-            text-align: center;
+            display: inline-block;
+            width: auto;
+            backdrop-filter: blur(4px);
             font-weight: 500;
-            display: none;
         }
-        .exito { background: rgba(34,197,94,0.2); border: 1px solid #22c55e; color: #4ade80; }
-        .error { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; }
-        .preview {
-            margin-top: 20px;
-            background: #0a0c12;
-            border-radius: 16px;
-            padding: 16px;
-            border: 1px solid rgba(255,255,255,0.05);
+
+        /* --- SECCIÓN PRECIOS (ESTILO DARK CLEAN) --- */
+        .precios { 
+            background-color: var(--fondo-secundario); padding: 100px 20px; 
+            position: relative; border-top: 1px solid var(--gris-bordes);
         }
-        .preview h3 {
-            font-size: 0.9rem;
-            color: #9ca3af;
-            margin-bottom: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        
+        .seccion-titulo { text-align: center; margin-bottom: 50px; }
+        .seccion-titulo h2 { font-size: 2.5rem; font-weight: 800; color: var(--blanco); text-transform: uppercase; margin-bottom: 10px;}
+        .seccion-titulo p { color: var(--texto-claro); font-size: 1.1rem; }
+        
+        .contenedor-precios { 
+            max-width: 800px; margin: 0 auto; display: grid; 
+            grid-template-columns: 1fr; gap: 30px; align-items: stretch; 
         }
-        .preview-content {
-            background: #11151f;
-            border-radius: 12px;
-            padding: 16px;
-            min-height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: auto;
+
+        @media (min-width: 768px) { .contenedor-precios { grid-template-columns: repeat(2, 1fr); gap: 30px; margin: 0 auto; } }
+
+        .tarjeta-precio { 
+            background: #0f1219;
+            border: 1px solid var(--gris-bordes); 
+            border-radius: 20px; padding: 50px 30px; text-align: center; 
+            display: flex; flex-direction: column; height: 100%; 
+            transition: all 0.3s ease; position: relative; overflow: visible;
         }
-        .aviso {
-            font-size: 0.8rem;
-            color: #6b7280;
-            margin-top: 8px;
-            text-align: center;
+        
+        .tarjeta-precio:hover { 
+            transform: translateY(-8px); 
+            border-color: rgba(14, 165, 233, 0.4); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6); 
         }
-        hr { border-color: rgba(255,255,255,0.05); margin: 20px 0; }
+        
+        .tarjeta-precio.destacada { 
+            background: #111824;
+            border: 1px solid rgba(14, 165, 233, 0.4); 
+            transform: scale(1.03); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.4); 
+            z-index: 2; 
+        }
+        .tarjeta-precio.destacada:hover { transform: scale(1.03) translateY(-8px); box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        
+        .etiqueta-popular { 
+            position: absolute; top: -1px; left: 50%; transform: translateX(-50%); 
+            background: linear-gradient(90deg, #0ea5e9, #3b82f6); color: var(--blanco); 
+            padding: 6px 20px; border-radius: 0 0 12px 12px; font-size: 0.75rem; 
+            font-weight: 800; letter-spacing: 1px; text-transform: uppercase; 
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3); white-space: nowrap;
+        }
+        
+        .tarjeta-precio h3 { font-size: 1.5rem; margin-bottom: 10px; text-transform: uppercase; font-weight: 700; color: #d1d5db; letter-spacing: 1px; }
+        .precio-valor { font-size: 4rem; font-weight: 800; color: var(--blanco); margin-bottom: 30px; display: flex; justify-content: center; align-items: flex-start; }
+        .precio-valor span { font-size: 2rem; margin-top: 10px; margin-right: 5px;}
+        
+        .tarjeta-precio ul { list-style: none; margin-bottom: 40px; text-align: left; flex-grow: 1; border-top: 1px solid var(--gris-bordes); padding-top: 30px;}
+        .tarjeta-precio ul li { margin-bottom: 18px; color: #e5e7eb; display: flex; align-items: center; gap: 15px; font-size: 1rem; font-weight: 400; }
+        .tarjeta-precio ul li i { color: #38bdf8; font-size: 1.1rem; min-width: 15px; text-align: center;}
+        .tarjeta-precio ul li i.fa-times { color: #ef4444; }
+
+        .btn-precio { background: #1f2937; border: none; color: var(--blanco); padding: 18px; border-radius: 12px; font-weight: 700; text-transform: uppercase; display: block; width: 100%; transition: all 0.3s ease; cursor: pointer; text-align: center; margin-top: auto; letter-spacing: 1px;}
+        .btn-precio:hover { background: #374151; transform: translateY(-2px); }
+        
+        .tarjeta-precio.destacada .btn-precio { background: linear-gradient(90deg, #0ea5e9, #3b82f6); box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3); }
+        .tarjeta-precio.destacada .btn-precio:hover { background: linear-gradient(90deg, #38bdf8, #60a5fa); }
+
+        /* --- SECCIÓN FAQ Y FOOTER --- */
+        .faq-section { background-color: var(--fondo-principal); color: var(--blanco); padding: 100px 20px; border-top: 1px solid var(--gris-bordes);}
+        .faq-container { max-width: 800px; margin: 0 auto; }
+        .faq-header { text-align: center; margin-bottom: 50px; }
+        .faq-header h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 15px; }
+        .faq-header p { color: var(--texto-claro); font-size: 1.1rem; }
+        
+        .faq-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 60px; }
+        .faq-item { background: #0f1219; border: 1px solid var(--gris-bordes); border-radius: 16px; padding: 25px; transition: transform 0.3s ease; }
+        .faq-item:hover { transform: translateY(-3px); border-color: rgba(14, 165, 233, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .faq-item h4 { color: var(--blanco); font-size: 1.2rem; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
+        .faq-item h4 i { color: var(--azul-principal); }
+        .faq-item p { color: var(--texto-claro); font-size: 0.95rem; line-height: 1.7; }
+        .faq-item p strong { color: var(--azul-hover); }
+
+        .faq-form-box { background: #0f1219; border: 1px solid var(--gris-bordes); border-radius: 20px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);}
+        .faq-form-box h3 { color: var(--blanco); font-size: 1.5rem; margin-bottom: 25px; text-align: center; }
+
+        .form-control { width: 100%; padding: 15px 20px; background: #111824; border: 1px solid var(--gris-bordes); border-radius: 10px; font-family: 'Poppins', sans-serif; font-size: 1rem; color: var(--blanco); transition: all 0.3s; }
+        .form-control::placeholder { color: #6b7280; }
+        .form-control:focus { outline: none; border-color: var(--azul-hover); background: #1e293b; }
+        .form-group { margin-bottom: 25px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 10px; color: #d1d5db; font-size: 0.95rem; }
+
+        /* --- MODALES --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 1000; display: none; 
+            justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease; overflow-y: auto; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-box {
+            background: #0f1219; border: 1px solid rgba(255,255,255,0.05); width: 100%; max-width: 650px;
+            border-radius: 20px; padding: 50px; position: relative;
+            transform: translateY(30px); transition: all 0.4s ease; 
+            max-height: 90vh; overflow-y: auto; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+        .modal-overlay.active .modal-box { transform: translateY(0); }
+        .modal-box::-webkit-scrollbar { width: 6px; }
+        .modal-box::-webkit-scrollbar-track { background: transparent; }
+        .modal-box::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
+
+        .close-btn { position: absolute; top: 25px; right: 30px; font-size: 28px; color: var(--texto-claro); cursor: pointer; transition: 0.2s; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,0.05); }
+        .close-btn:hover { color: var(--blanco); background: rgba(255,255,255,0.1); }
+        
+        .modal-title { font-size: 2rem; font-weight: 800; color: var(--blanco); margin-bottom: 10px; }
+        
+        .payment-options { display: flex; flex-direction: column; gap: 12px; }
+        .payment-label { display: flex; align-items: center; gap: 15px; padding: 18px; background: #111824; border: 1px solid var(--gris-bordes); border-radius: 10px; cursor: pointer; transition: all 0.2s ease; color: #d1d5db; font-weight: 500;}
+        .payment-label:hover { border-color: var(--azul-principal); background: #1e293b; color: #fff; }
+        .payment-label input[type="radio"] { accent-color: var(--azul-principal); transform: scale(1.3); }
+        
+        .payment-instructions { background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.3); padding: 20px; border-radius: 10px; margin-top: 15px; font-size: 0.95rem; color: #e0f2fe; display: none; line-height: 1.6;}
+
+        .terms-box { background: #050507; border: 1px solid var(--gris-bordes); padding: 20px; border-radius: 10px; font-size: 0.85rem; color: var(--texto-claro); margin-top: 30px; }
+        .terms-box h4 { color: var(--blanco); margin-bottom: 8px; font-size: 1rem;}
+        .terms-checkbox { display: flex; align-items: flex-start; gap: 12px; margin-top: 20px; color: #d1d5db; cursor: pointer;}
+        .terms-checkbox input { margin-top: 4px; accent-color: var(--azul-principal); transform: scale(1.2);}
+
+        .btn-submit { background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: var(--blanco); width: 100%; padding: 20px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(14, 165, 233, 0.4); }
+
+        .main-footer { background-color: #000; color: #6b7280; text-align: center; padding: 30px 20px; font-size: 0.9rem; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        .main-footer span { color: var(--blanco); font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .hero { padding: 100px 20px 60px; }
+            .hero h1 { font-size: 2.5rem; }
+            .modal-box { padding: 35px 20px; }
+            .hero-subtitle { font-size: 0.95rem; }
+            .tarjeta-precio { padding: 40px 25px; }
+        }
+
+        #mensajeCupon { font-size: 0.85rem; transition: all 0.3s ease; }
+
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h1>➕ Nuevo Post</h1>
-        <p>Agrega un lanzamiento a la página principal <strong>profilebio.me</strong><br>
-        <span style="font-size:0.8rem;">✅ El código HTML será sanitizado automáticamente (sin scripts ni eventos peligrosos).</span></p>
 
-        <form id="formPost">
-            <label>Título del post:</label>
-            <input type="text" id="titulo" placeholder="Ej: Mi nuevo video" required>
+    <header class="hero">
+        <div class="logo">ProfileBio<span>.me</span></div>
+        <h1>Tu música suena pro,<br>tu perfil debe verse pro</h1>
+        
+        <p class="hero-subtitle">DISEÑOS ELITES PARA ARTISTAS Y CREADORES DE CONTENIDO PARA DESTACAR TUS PROYECTOS EN REDES SOCIALES</p>
+        <br>
+        <button class="btn-principal" onclick="document.querySelector('.precios').scrollIntoView({behavior: 'smooth'})">VER PLANES</button>
+    </header>
 
-            <label>Código HTML (imagen, video, iframe):</label>
-            <textarea id="codigoHtml" rows="4" placeholder='Ej: <img src="https://ejemplo.com/imagen.jpg" alt="Mi imagen"> o <iframe width="560" height="315" src="https://www.youtube.com/embed/..." frameborder="0"></iframe>' required></textarea>
+    <section class="portfolio-section">
+        <div class="portfolio-header">
+            <h2>Trabajos Destacados</h2>
+            <p>Explora la galería de nuestros diseños interactivos directamente aquí abajo.</p>
+            <div class="aviso-ejemplo">
+                <i class="fas fa-info-circle"></i> Los trabajos mostrados son ejemplos ilustrativos, no son monetizables. Cada creación vendida es única y pertenece al cliente, no a artistas o marcas externas.
+            </div>
+        </div>
 
-            <label>Descripción:</label>
-            <textarea id="descripcion" rows="3" placeholder="Describe el contenido del post..." required></textarea>
+        <div style="max-width: 1100px; margin: 0 auto; height: 80vh; min-height: 600px; border-radius: 20px; overflow: hidden; border: 1px solid var(--gris-bordes); box-shadow: 0 30px 60px rgba(0,0,0,0.8); position: relative; z-index: 2; background: #000;">
+            <iframe src="https://post.profilebio.me/" style="width: 100%; height: 100%; border: none; display: block;" title="Galería de Trabajos ProfileBio"></iframe>
+        </div>
+    </section>
 
-            <!-- Previsualización en vivo -->
-            <div class="preview">
-                <h3>🔍 Previsualización (cómo se verá)</h3>
-                <div class="preview-content" id="previewArea">
-                    <span style="color:#6b7280;">El HTML seguro se mostrará aquí...</span>
-                </div>
-                <div class="aviso">⚠️ Solo se muestran etiquetas seguras. Los scripts y eventos maliciosos se eliminan automáticamente.</div>
+    <section class="precios">
+        <div class="seccion-titulo">
+            <h2>Nuestros Planes</h2>
+            <p>Elige el paquete ideal para llevar tu música al siguiente nivel.</p>
+        </div>
+
+        <div style="max-width: 800px; margin: 0 auto 50px; background: rgba(14, 165, 233, 0.05); border: 1px dashed rgba(14, 165, 233, 0.4); padding: 25px; border-radius: 15px; color: #d1d5db; text-align: center;">
+            <p style="font-weight: 700; color: #38bdf8; font-size: 1.1rem; margin-bottom: 10px;"><i class="fas fa-cloud-upload-alt"></i> SUBE TUS ARCHIVOS DE ALTA CALIDAD A LA NUBE Y ENVÍANOS EL LINK EN EL FORMULARIO</p>
+            <p style="font-size: 0.95rem; margin-bottom: 0;">(GOOGLE DRIVE, MEGA, MEDIAFIRE, DROPBOX, ONEDRIVE, ETC.)</p>
+        </div>
+
+        <div class="contenedor-precios">
+
+            <div class="tarjeta-precio">
+                <h3>BÁSICO</h3>
+                <div class="precio-valor"><span>$</span>20</div>
+                <ul>
+                    <li><i class="fas fa-check"></i> 1 Banner Digital con Foto</li>
+                    <li><i class="fas fa-check"></i> Dominio PROFILEBIO.ME (1 año gratis)</li>
+                    <li><i class="fas fa-times"></i> No Backup Banner (Despues del año sera eliminado)</li>
+                    <li><i class="fas fa-times"></i> No se puede editar el diseño</li>
+                    <li><i class="fas fa-check"></i> Entrega en 3 a 10 Días</li>
+                </ul>
+                <button onclick="abrirModal('BÁSICO - $20', true)" class="btn-precio">COMPRAR AHORA</button>
             </div>
 
-            <button type="submit">PUBLICAR POST</button>
-        </form>
+            <div class="tarjeta-precio destacada">
+                <div class="etiqueta-popular">MÁS COMPLETO</div>
+                <h3 style="color: #60a5fa;">PREMIUM</h3>
+                <div class="precio-valor" style="color: #fff;"><span>$</span>40</div>
+                <ul>
+                    <li><i class="fas fa-check"></i> 1 Banner Digital</li>
+                    <li><i class="fas fa-check"></i> Foto De Profile Personalizada</li>
+                    <li><i class="fas fa-check"></i> Todas las redes sociales</li>
+                    <li><i class="fas fa-check"></i> Dominio PROFILEBIO.ME (Gratis)</li>
+                    <li><i class="fas fa-check"></i> Backup Template</li>
+                    <li><i class="fas fa-check"></i> Entrega en 3 a 10 Días</li>
+                </ul>
+                
+                <div style="background: rgba(255,255,255,0.03); border-radius: 10px; padding: 15px; margin-bottom: 25px; text-align: left; font-size: 0.8rem; color: #d1d5db; line-height: 1.5;">
+                    <p style="margin-bottom: 12px;"><strong style="color: #38bdf8;">NOTA:</strong> Si necesitas cambiar algo de tu banner despues de realizar la comprar el costo por actualización y mantenimiento es de $10.00 Dolares.</p>
+                    <p style="margin-bottom: 10px;">Te ayudamos a configurarlo si necesitas ayuda. Compra tu .com .net .me .org en Hostinger:</p>
+                    <a href="https://www.hostinger.com?REFERRALCODE=OTELOSHACV6M" target="_blank" style="display: inline-block; background: #673ab7; color: white; padding: 8px 14px; border-radius: 6px; font-weight: bold; text-decoration: none; font-size: 0.75rem; transition: background 0.3s;"><i class="fas fa-globe" style="color: white; min-width: auto; margin-right: 5px;"></i> Comprar en Hostinger</a>
+                </div>
 
-        <div id="mensajeRespuesta" class="mensaje"></div>
+                <button onclick="abrirModal('PREMIUM - $40', true)" class="btn-precio">COMPRAR AHORA</button>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="faq-container">
+            <div class="faq-header">
+                <h2>Preguntas Frecuentes</h2>
+                <p>Resolvemos las dudas de nuestros clientes antes de empezar.</p>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <h4><i class="fas fa-globe"></i> ¿Puedo usar un dominio personalizado?</h4>
+                    <p><strong>Sí, por supuesto.</strong> Si quieres que tu banner tenga tu propio enlace (ej. www.tuartista.com), te ayudamos a configurarlo. Solo necesitas comprar tu dominio en plataformas como <strong>Hostinger, GoDaddy o Namecheap</strong>, y nosotros hacemos la conexión.</p>
+                </div>
+
+                <div class="faq-item">
+                    <h4><i class="fas fa-check-circle"></i> ¿Tengo que pagar mensualidad o anualidad?</h4>
+                    <p><strong>Totalmente no.</strong> A diferencia de la competencia (como Linktree o parecidos) donde te cobran mes a mes por servicios interactivos, con nosotros realizas un <strong>único pago de por vida</strong>. El banner es tuyo para siempre.</p>
+                </div>
+                <div class="faq-item">
+                    <h4><i class="fas fa-truck-fast"></i> ¿Cómo y en qué tiempo entregan mi banner?</h4>
+                    <p>Una vez confirmes tu pago y nos envíes la información, procesaremos el código de tu perfil y te enviaremos tu <strong>enlace web personalizado</strong> al WhatsApp o Email en el tiempo estipulado de tu plan. Listo para copiar y pegar en tu biografía.</p>
+                </div>
+                <div class="faq-item">
+                    <h4><i class="fas fa-shield-alt"></i> ¿Qué pasa si luego necesito cambiar los links?</h4>
+                    <p>No te preocupes. Al ser nuestro cliente, conservaremos el código fuente de tu banner. Si sacas una nueva canción o quieres actualizar tus redes, solo contáctanos y haremos la actualización por un pequeño costo de mantenimiento.</p>
+                </div>
+            </div>
+            
+            <div class="faq-form-box">
+                <h3>¿Tienes otra pregunta? Envíanos un Mensaje</h3>
+                <form action="https://api.web3forms.com/submit" method="POST" onsubmit="return enviarFaq(event)">
+                    <input type="hidden" name="access_key" value="47e9109c-7357-47e2-a284-7d05a6691091">
+                    <input type="hidden" name="subject" value="¡Nueva Pregunta desde la web ProfileBio.me!">
+                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                    
+                    <div class="form-group">
+                        <label>Tu Correo Electrónico:</label>
+                        <input type="email" name="Email_Contacto" class="form-control" placeholder="Para poder responderte..." required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tu Pregunta:</label>
+                        <textarea name="Mensaje" class="form-control" rows="4" placeholder="Escribe tu duda aquí..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-principal" style="width: 100%; border-radius: 12px;">ENVIAR PREGUNTA</button>
+                </form>
+            </div>
+            
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <p>© 2026 <span>ProfileBio.me</span> - Todos los derechos reservados.</p>
+    </footer>
+
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-box">
+            <span class="close-btn" onclick="cerrarModal()">×</span>
+            <h2 class="modal-title">Completa tu Pedido</h2>
+            <p style="color: var(--texto-claro); margin-bottom: 25px;">Llena los datos y añade los enlaces de tus archivos.</p>
+
+            <form action="https://api.web3forms.com/submit" method="POST" onsubmit="return validarFormularioPago(event)">
+                <input type="hidden" name="access_key" value="47e9109c-7357-47e2-a284-7d05a6691091">
+                <input type="hidden" name="subject" value="¡Nuevo Pedido en ProfileBio.me!">
+                <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                
+                <div class="form-group">
+                    <label>Plan Seleccionado:</label>
+                    <input type="text" id="planSeleccionado" name="Plan" class="form-control" readonly style="background: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.3); font-weight: bold; color: #38bdf8;">
+                </div>
+
+                <div class="form-group">
+                    <label>¿Tienes un cupón de descuento?</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="inputCupon" class="form-control" placeholder="Escribe tu código aquí..." style="text-transform: uppercase;">
+                        <button type="button" onclick="aplicarCupon()" class="btn-principal" style="padding: 0 20px; font-size: 0.8rem; width: auto; height: 52px; white-space: nowrap; border-radius: 10px;">APLICAR</button>
+                    </div>
+                    <small id="mensajeCupon" style="display: block; margin-top: 8px; font-weight: 600;"></small>
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre del Artista:</label>
+                    <input type="text" name="Artista" class="form-control" placeholder="Escribe tu nombre artístico" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Título del Lanzamiento / Canción:</label>
+                    <input type="text" name="Cancion" class="form-control" placeholder="Escribe el nombre del sencillo o álbum" required>
+                </div>
+
+                <h3 style="font-size: 1.1rem; color: var(--blanco); margin-top: 35px; margin-bottom: 8px;">Redes Sociales</h3>
+                <p id="instruccionesRedes" style="font-size: 0.85rem; color: var(--texto-claro); margin-bottom: 15px;">Llena los enlaces requeridos según tu plan.</p>
+                <div class="form-group">
+                    <input type="url" name="Link_AppleMusic" class="form-control input-red" placeholder="Link de Apple Music" style="margin-bottom: 10px;">
+                    <input type="url" name="Link_Spotify" class="form-control input-red" placeholder="Link de Spotify" style="margin-bottom: 10px;">
+                    <input type="url" name="Link_AmazonMusic" class="form-control input-red" placeholder="Link de Amazon Music" style="margin-bottom: 10px;">
+                    <input type="url" name="Link_YouTube" class="form-control input-red" placeholder="Link de YouTube" style="margin-bottom: 10px;">
+                    <input type="url" name="Link_TikTok" class="form-control input-red" placeholder="Link de TikTok" style="margin-bottom: 10px;">
+                    <input type="url" name="Link_Deezer" class="form-control input-red" placeholder="Link de Deezer">
+                </div>
+                <p id="avisoLimiteRedes" style="color: #38bdf8; font-size: 0.85rem; display: none; margin-top: 5px; font-weight: bold;"><i class="fas fa-info-circle"></i> Has marcado tus 2 redes del plan Básico.</p>
+
+                <div class="form-group" style="margin-bottom: 40px; margin-top: 25px;" id="grupoLinkFondo">
+                    <label>Enlace de tu Fondo/Video (Link de Drive, Mega, etc.):</label>
+                    <input type="url" id="inputLinkFondo" name="Link_Fondo" class="form-control" placeholder="Pega el link del video o imagen aquí..." style="margin-top: 10px;">
+                </div>
+
+                <h3 style="font-size: 1.2rem; color: var(--blanco); margin-bottom: 15px;">Datos de Contacto y Pago</h3>
+                
+                <div class="form-group">
+                    <label>Número de Teléfono (WhatsApp):</label>
+                    <input type="tel" name="Telefono" class="form-control" placeholder="Ej: +1 234 567 8900" required>
+                    <small style="color: var(--texto-claro); font-size: 0.8rem; display:block; margin-top:5px;">Lo usaremos para enviarte los links seguros de pago.</small>
+                </div>
+
+                <div class="payment-options">
+                    <label class="payment-label">
+                        <input type="radio" name="Metodo_Pago" value="Pago Online Global (Stripe)" onchange="mostrarInstrucciones('stripe')" required>
+                        Tarjeta / Google Pay / Apple Pay (Internacional)
+                    </label>
+                    <label class="payment-label">
+                        <input type="radio" name="Metodo_Pago" value="PayPal" onchange="mostrarInstrucciones('paypal')">
+                        PayPal
+                    </label>
+                    <label class="payment-label">
+                        <input type="radio" name="Metodo_Pago" value="Criptomonedas / Binance" onchange="mostrarInstrucciones('binance')">
+                        Criptomonedas (Binance Pay)
+                    </label>
+                    <label class="payment-label">
+                        <input type="radio" name="Metodo_Pago" value="Transferencia Manual / Western Union" onchange="mostrarInstrucciones('manual')">
+                        Transferencia / Western Union (Acordar por WhatsApp)
+                    </label>
+                </div>
+
+                <div id="inst_stripe" class="payment-instructions">
+                    <i class="fas fa-credit-card" style="margin-right:8px;"></i> Al enviar el formulario, te contactaremos a tu WhatsApp con un link seguro para procesar el pago con tarjeta en tu moneda local.
+                </div>
+                <div id="inst_paypal" class="payment-instructions">
+                    <i class="fab fa-paypal" style="margin-right:8px;"></i> Al enviar el formulario, te pasaremos a tu WhatsApp nuestro enlace directo de PayPal.me para transferir el monto.
+                </div>
+                <div id="inst_binance" class="payment-instructions">
+                    <i class="fab fa-bitcoin" style="margin-right:8px;"></i> Te contactaremos por WhatsApp para enviarte nuestra Wallet (USDT) o nuestro Binance Pay ID para que envíes el pago.
+                </div>
+                <div id="inst_manual" class="payment-instructions">
+                    <i class="fas fa-money-bill-wave" style="margin-right:8px;"></i> Perfecto. Te escribiremos a tu WhatsApp para evaluar de qué país eres y darte las opciones de banco local o Western Union.
+                </div>
+
+                <div class="terms-box">
+                    <h4>Políticas del Servicio</h4>
+                    <p>El producto final es un banner interactivo cuya función principal es redirigir a plataformas digitales. Debido a que es un servicio digital personalizado, <strong>no se realizarán devoluciones de dinero</strong> tras la entrega del banner, salvo por fallos técnicos de nuestro código que no podamos reparar en 48 horas.</p>
+                    
+                    <label class="terms-checkbox">
+                        <input type="checkbox" required>
+                        <span>He leído y acepto los términos y condiciones. Entiendo que los tiempos de entrega comienzan <strong>después</strong> de confirmar el pago vía WhatsApp o Correo.</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">ENVIAR PEDIDO</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Configuración de JSONBin (⚠️ visible, idealmente usar backend propio)
-        const BIN_ID = '69d00038856a682189f88f1b';
-        const API_KEY = '$2a$10$QzNa.Zj4OfVuzJpLx92t4eNgS1Yh/6UU5nsFuyXJKyxrkh8swx8IC';
-        const API_BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
-        const form = document.getElementById('formPost');
-        const mensajeDiv = document.getElementById('mensajeRespuesta');
-        const codigoHtmlInput = document.getElementById('codigoHtml');
-        const previewDiv = document.getElementById('previewArea');
-
-        // Configuración de DOMPurify: permitir iframes de cualquier fuente, videos, imágenes, etc.
-        // pero bloquear cualquier evento (onclick, onerror, etc.) y javascript: en links
-        const purifyConfig = {
-            ALLOWED_TAGS: [
-                'img', 'video', 'iframe', 'source', 'a', 'p', 'br', 'strong', 'em',
-                'div', 'span', 'h1', 'h2', 'h3', 'h4', 'ul', 'li', 'blockquote'
-            ],
-            ALLOWED_ATTR: ['src', 'alt', 'title', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'href', 'target', 'rel', 'controls', 'autoplay', 'loop', 'muted', 'poster'],
-            ALLOW_DATA_ATTR: false,
-            ADD_TAGS: [],      // no agregar tags extra peligrosos
-            ADD_ATTR: [],      // no permitir atributos personalizados
-            FORBID_TAGS: ['script', 'style', 'iframe'], // aunque iframe está permitido arriba, lo dejamos en permitidos, pero este es redundante
-            FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onsubmit']
+        // --- SISTEMA DE CUPONES ---
+        const LISTA_CUPONES = {
+            "PANCHOPR": 10,
+            "DRAKOPR": 10,
+            "LAMOVIEPR": 10,
+            "PROBIOME": 10,
+            "ARTISTA": 10
         };
 
-        // Función para sanitizar y actualizar previsualización en tiempo real
-        function actualizarPrevisualizacion() {
-            let rawHtml = codigoHtmlInput.value.trim();
-            if (rawHtml === '') {
-                previewDiv.innerHTML = '<span style="color:#6b7280;">El HTML seguro se mostrará aquí...</span>';
+        let precioBaseGlobal = 0;
+        let descuentoActual = 0;
+        let cuponYaAplicado = false;
+
+        function aplicarCupon() {
+            const input = document.getElementById('inputCupon');
+            const mensaje = document.getElementById('mensajeCupon');
+            const displayPlan = document.getElementById('planSeleccionado');
+            const codigo = input.value.toUpperCase().trim();
+
+            if (cuponYaAplicado) {
+                mensaje.innerText = "Ya se ha aplicado un descuento a este pedido.";
+                mensaje.style.color = "#ef4444";
                 return;
             }
-            // Sanitizar el HTML
-            let cleanHtml = DOMPurify.sanitize(rawHtml, purifyConfig);
-            if (cleanHtml === '') {
-                previewDiv.innerHTML = '<span style="color:#ef4444;">❌ El código HTML no contiene etiquetas seguras o está vacío después de la limpieza.</span>';
+
+            if (LISTA_CUPONES.hasOwnProperty(codigo)) {
+                descuentoActual = LISTA_CUPONES[codigo];
+                let nuevoPrecio = precioBaseGlobal - descuentoActual;
+                
+                // Evitar precios negativos
+                if (nuevoPrecio < 0) nuevoPrecio = 0;
+
+                // Actualizar el valor del input que se envía por correo
+                const partes = displayPlan.value.split('-');
+                const nombreLimpio = partes[0].trim();
+                displayPlan.value = `${nombreLimpio} - $${nuevoPrecio} (Cupón: ${codigo} -$${descuentoActual})`;
+                
+                mensaje.innerText = `¡Cupón aplicado! Se han descontado $${descuentoActual}.`;
+                mensaje.style.color = "#4ade80";
+                cuponYaAplicado = true;
+                input.disabled = true;
             } else {
-                previewDiv.innerHTML = cleanHtml;
+                mensaje.innerText = "El código de cupón no es válido.";
+                mensaje.style.color = "#ef4444";
             }
         }
 
-        // Escuchar cambios en el textarea para actualizar previsualización
-        codigoHtmlInput.addEventListener('input', actualizarPrevisualizacion);
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            mensajeDiv.style.display = 'none';
-            mensajeDiv.className = 'mensaje';
-
-            const titulo = document.getElementById('titulo').value.trim();
-            const rawHtml = document.getElementById('codigoHtml').value.trim();
-            const descripcion = document.getElementById('descripcion').value.trim();
-
-            if (!titulo || !rawHtml || !descripcion) {
-                mostrarMensaje('Todos los campos son obligatorios', 'error');
-                return;
-            }
-
-            // Sanitizar el HTML antes de guardar
-            let htmlSeguro = DOMPurify.sanitize(rawHtml, purifyConfig);
-            if (htmlSeguro === '') {
-                mostrarMensaje('❌ El código HTML ingresado no es válido o contiene solo elementos peligrosos. Usa etiquetas seguras como <img>, <video> o <iframe>.', 'error');
-                return;
-            }
-
-            // Validación adicional: si el usuario intentó poner solo texto plano sin etiquetas, rechazar
-            if (!rawHtml.includes('<') && !rawHtml.includes('>')) {
-                mostrarMensaje('❌ Debes ingresar un código HTML con etiquetas (ej: <img src="...">). No se permiten URLs sueltas o texto plano.', 'error');
-                return;
-            }
-
-            try {
-                // 1. Obtener posts actuales
-                const respuesta = await fetch(API_BIN_URL, {
-                    headers: { 'X-Master-Key': API_KEY }
-                });
-                if (!respuesta.ok) throw new Error('No se pudo leer la base de datos');
+        // --- FUNCIÓN CENTRALIZADA PARA ENVIAR SIN RECARGAR PÁGINA (AJAX) ---
+        function enviarPorFetch(form, mensajeExito, cerrarModales) {
+            let actionURL = form.action; 
+            
+            fetch(actionURL, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json' 
+                },
+                body: new FormData(form)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP Status " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if(data.success === "false" || data.success === false) {
+                    throw new Error(data.message || "Error en el servidor");
+                }
                 
-                const datos = await respuesta.json();
-                const postsActuales = datos.record || [];
+                alert(mensajeExito);
+                form.reset(); 
+                
+                if (cerrarModales) {
+                    cerrarModal();
+                }
+            })
+            .catch(error => {
+                console.warn("Fallo el envío asíncrono", error);
+                alert("Ocurrió un error al enviar el formulario. Por favor, revisa tu conexión e inténtalo de nuevo.");
+            });
+        }
 
-                // 2. Guardar el HTML ya sanitizado
-                const nuevoPost = { 
-                    titulo, 
-                    imagen: htmlSeguro,   // Guardamos el código limpio y seguro
-                    descripcion 
-                };
-                postsActuales.unshift(nuevoPost);
+        const inputsRedesPago = document.querySelectorAll('.input-red');
+        const avisoLimite = document.getElementById('avisoLimiteRedes');
 
-                // 3. Actualizar el bin
-                const actualizar = await fetch(API_BIN_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
-                    },
-                    body: JSON.stringify(postsActuales)
+        function checkLimitesBasico() {
+            let planActual = document.getElementById('planSeleccionado').value;
+            if (!planActual.includes("BÁSICO")) return;
+
+            let llenos = 0;
+            inputsRedesPago.forEach(inp => {
+                if (inp.value.trim() !== '') llenos++;
+            });
+
+            if (llenos >= 2) {
+                avisoLimite.style.display = 'block';
+                // Bloquear los vacíos
+                inputsRedesPago.forEach(inp => {
+                    if (inp.value.trim() === '') {
+                        inp.disabled = true;
+                        inp.style.opacity = '0.5';
+                        inp.style.cursor = 'not-allowed';
+                    }
                 });
-
-                if (!actualizar.ok) throw new Error('Error al guardar en el servidor');
-
-                mostrarMensaje('✅ ¡Post creado exitosamente! El HTML sanitizado se ha publicado.', 'exito');
-                form.reset();
-                // Limpiar previsualización
-                previewDiv.innerHTML = '<span style="color:#6b7280;">El HTML seguro se mostrará aquí...</span>';
-            } catch (error) {
-                console.error(error);
-                mostrarMensaje('❌ Error: ' + error.message, 'error');
+            } else {
+                avisoLimite.style.display = 'none';
+                // Desbloquear todos
+                inputsRedesPago.forEach(inp => {
+                    inp.disabled = false;
+                    inp.style.opacity = '1';
+                    inp.style.cursor = 'text';
+                });
             }
+        }
+
+        inputsRedesPago.forEach(inp => {
+            inp.addEventListener('input', checkLimitesBasico);
         });
 
-        function mostrarMensaje(texto, tipo) {
-            mensajeDiv.textContent = texto;
-            mensajeDiv.classList.add(tipo);
-            mensajeDiv.style.display = 'block';
-            setTimeout(() => {
-                mensajeDiv.style.display = 'none';
-                mensajeDiv.classList.remove(tipo);
-            }, 5000);
+        // Validar al enviar el formulario de pago
+        function validarFormularioPago(e) {
+            let planActual = document.getElementById('planSeleccionado').value;
+            let llenos = 0;
+            inputsRedesPago.forEach(inp => {
+                if (inp.value.trim() !== '') llenos++;
+            });
+
+            if (planActual.includes("BÁSICO")) {
+                if (llenos !== 2) {
+                    e.preventDefault();
+                    alert("⚠️ El plan BÁSICO requiere llenar EXACTAMENTE 2 redes sociales. Por favor, selecciona y pega 2 enlaces.");
+                    return false;
+                }
+            }
+            
+            e.preventDefault(); 
+            enviarPorFetch(e.target, "¡Gracias por tu pedido! Nos pondremos en contacto contigo pronto.", true);
+            return false;
         }
+
+        function enviarFaq(e) {
+            e.preventDefault();
+            enviarPorFetch(e.target, "¡Gracias! Hemos recibido tu pregunta y te responderemos pronto a tu correo.", false);
+            return false;
+        }
+
+        function abrirModal(nombrePlan, permiteVideo) {
+            document.getElementById('orderModal').classList.add('active');
+            
+            // Configuración inicial de cupones
+            precioBaseGlobal = parseInt(nombrePlan.split('$')[1]);
+            descuentoActual = 0;
+            cuponYaAplicado = false;
+            
+            document.getElementById('planSeleccionado').value = nombrePlan;
+            
+            const inputCupon = document.getElementById('inputCupon');
+            if(inputCupon) {
+                inputCupon.value = "";
+                inputCupon.disabled = false;
+            }
+            
+            const mensajeCupon = document.getElementById('mensajeCupon');
+            if(mensajeCupon) {
+                mensajeCupon.innerText = "";
+                mensajeCupon.style.color = "";
+            }
+
+            document.body.style.overflow = 'hidden';
+
+            let grupoVideo = document.getElementById('grupoLinkFondo');
+            let inputVideo = document.getElementById('inputLinkFondo');
+            let instrucciones = document.getElementById('instruccionesRedes');
+            
+            if(permiteVideo) {
+                grupoVideo.style.display = 'block'; 
+            } else {
+                grupoVideo.style.display = 'none'; 
+                inputVideo.value = ''; 
+            }
+
+            inputsRedesPago.forEach(inp => {
+                inp.value = '';
+                inp.disabled = false;
+                inp.style.opacity = '1';
+                inp.style.cursor = 'text';
+            });
+            avisoLimite.style.display = 'none';
+
+            if (nombrePlan.includes("BÁSICO")) {
+                instrucciones.innerHTML = "El plan Básico incluye <strong>2 Redes Sociales</strong>. Pega los links en las 2 plataformas que prefieras (las demás se bloquearán).";
+            } else {
+                instrucciones.innerHTML = "El plan Premium incluye <strong>Todas las Redes Sociales</strong>. Pega todos los enlaces que necesites.";
+            }
+        }
+
+        function cerrarModal() {
+            document.getElementById('orderModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function mostrarInstrucciones(metodo) {
+            document.getElementById('inst_stripe').style.display = 'none';
+            document.getElementById('inst_paypal').style.display = 'none';
+            document.getElementById('inst_binance').style.display = 'none';
+            document.getElementById('inst_manual').style.display = 'none';
+
+            document.getElementById('inst_' + metodo).style.display = 'block';
+        }
+
+        window.onclick = function(event) {
+            let modalPago = document.getElementById('orderModal');
+            if (event.target == modalPago) {
+                cerrarModal();
+            }
+        }
+
+        // --- SCRIPT EXTRAÍDO DEL DISEÑO DE "NGEL" PARA LA VIBRACIÓN EN BOTONES ---
+        document.querySelectorAll('.app-button-ngel').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault(); 
+                const platformName = btn.querySelector('.app-label-ngel').innerText;
+                console.log(`Abriendo aplicación: ${platformName}`);
+                
+                if (navigator.vibrate) {
+                    navigator.vibrate(30);
+                }
+            });
+        });
     </script>
 </body>
 </html>
+
