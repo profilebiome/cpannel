@@ -18,7 +18,7 @@
             min-height: 100vh;
         }
         .form-container {
-            max-width: 600px;
+            max-width: 800px;
             width: 100%;
             background: #0f1219;
             border: 1px solid rgba(255,255,255,0.08);
@@ -57,6 +57,10 @@
         }
         button:hover:not(:disabled) { transform: translateY(-2px); }
         button:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-secundario {
+            background: rgba(255,255,255,0.05);
+            margin-top: 10px;
+        }
         .mensaje {
             margin-top: 20px;
             padding: 12px;
@@ -68,8 +72,36 @@
         .exito { background: rgba(34,197,94,0.2); border: 1px solid #22c55e; color: #4ade80; }
         .error { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; }
         hr { border-color: rgba(255,255,255,0.05); margin: 40px 0; }
+        
+        /* Vista previa */
+        .vista-previa {
+            margin-top: 30px;
+            padding: 20px;
+            background: #05070c;
+            border-radius: 20px;
+            border: 1px dashed rgba(14,165,233,0.3);
+        }
+        .vista-previa h3 {
+            font-size: 1rem;
+            color: #0ea5e9;
+            margin-bottom: 15px;
+        }
+        .preview-contenido {
+            background: #0a0c12;
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+        }
+        .preview-contenido img, .preview-contenido iframe, .preview-contenido video {
+            max-width: 100%;
+            border-radius: 12px;
+        }
+        .preview-contenido iframe {
+            aspect-ratio: 16/9;
+            width: 100%;
+        }
 
-        /* --- NUEVOS ESTILOS PARA LA LISTA DE POSTS --- */
+        /* Lista de posts */
         .gestion-posts h2 {
             font-size: 1.4rem;
             margin-bottom: 20px;
@@ -116,6 +148,7 @@
             width: auto;
             margin-top: 0;
             cursor: pointer;
+            transition: all 0.2s;
         }
         .btn-eliminar:hover:not(:disabled) {
             background: #ef4444;
@@ -132,14 +165,20 @@
             <label>Título del post:</label>
             <input type="text" id="titulo" placeholder="Ej: Mi nuevo video" required>
 
-            <label>Código HTML (Imagen, video o iframe):</label>
-            <textarea id="codigoHtml" rows="3" placeholder='Ej: <img src="..." alt="..."> o <iframe src="..."></iframe>' required></textarea>
+            <label>Código HTML (imagen, video o iframe):</label>
+            <textarea id="codigoHtml" rows="3" placeholder='Ej: <img src="https://ejemplo.com/imagen.jpg"> o <iframe src="https://youtube.com/embed/..."></iframe>' required></textarea>
 
             <label>Descripción:</label>
             <textarea id="descripcion" rows="4" placeholder="Describe el contenido del post..." required></textarea>
 
             <button id="btnSubmit" type="submit">PUBLICAR POST</button>
+            <button type="button" id="btnPrevisualizar" class="btn-secundario">👁️ Vista previa</button>
         </form>
+
+        <div id="vistaPrevia" class="vista-previa" style="display: none;">
+            <h3>🔍 Vista previa del post</h3>
+            <div class="preview-contenido" id="previewHtml"></div>
+        </div>
 
         <div id="mensajeRespuesta" class="mensaje"></div>
 
@@ -151,10 +190,10 @@
                 <p style="text-align: center; color: #9ca3af;">Cargando posts publicados...</p>
             </div>
         </div>
-
     </div>
 
     <script>
+        // ⚙️ CONFIGURACIÓN EXACTA A LA TUYA
         const BIN_ID = '69d00038856a682189f88f1b';
         const API_KEY = '$2a$10$QzNa.Zj4OfVuzJpLx92t4eNgS1Yh/6UU5nsFuyXJKyxrkh8swx8IC';
         const API_BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
@@ -162,10 +201,43 @@
         const form = document.getElementById('formPost');
         const mensajeDiv = document.getElementById('mensajeRespuesta');
         const btnSubmit = document.getElementById('btnSubmit');
+        const btnPrevisualizar = document.getElementById('btnPrevisualizar');
+        const vistaPreviaDiv = document.getElementById('vistaPrevia');
+        const previewHtml = document.getElementById('previewHtml');
         
-        let postsGlobales = []; // Variable para almacenar los posts actuales
+        let postsGlobales = [];
 
-        // EVENTO: CREAR POST
+        // --- VISTA PREVIA EN TIEMPO REAL ---
+        function actualizarVistaPrevia() {
+            const codigo = document.getElementById('codigoHtml').value.trim();
+            const titulo = document.getElementById('titulo').value.trim();
+            const descripcion = document.getElementById('descripcion').value.trim();
+            
+            if (!codigo) {
+                vistaPreviaDiv.style.display = 'none';
+                return;
+            }
+            
+            vistaPreviaDiv.style.display = 'block';
+            let preview = '';
+            if (titulo) preview += `<h4 style="color:white; margin-bottom:8px;">${escapeHtmlUI(titulo)}</h4>`;
+            preview += `<div style="margin-bottom:12px;">${codigo}</div>`;
+            if (descripcion) preview += `<p style="color:#9ca3af; font-size:0.85rem;">${escapeHtmlUI(descripcion)}</p>`;
+            previewHtml.innerHTML = preview;
+        }
+        
+        document.getElementById('codigoHtml').addEventListener('input', actualizarVistaPrevia);
+        document.getElementById('titulo').addEventListener('input', actualizarVistaPrevia);
+        document.getElementById('descripcion').addEventListener('input', actualizarVistaPrevia);
+        
+        btnPrevisualizar.addEventListener('click', () => {
+            actualizarVistaPrevia();
+            if (vistaPreviaDiv.style.display !== 'block' && document.getElementById('codigoHtml').value.trim()) {
+                vistaPreviaDiv.style.display = 'block';
+            }
+        });
+
+        // --- CREAR POST ---
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             mensajeDiv.style.display = 'none';
@@ -189,16 +261,25 @@
             btnSubmit.textContent = '⏳ Publicando...';
 
             try {
-                // Agregar al inicio del array global
-                const nuevoPost = { titulo, imagen: codigoHtml, descripcion };
-                postsGlobales.unshift(nuevoPost);
+                // Generar un ID único simple para futuras referencias (opcional pero buena práctica)
+                const nuevoPost = { 
+                    id: Date.now().toString(),
+                    titulo: titulo, 
+                    html: codigoHtml, 
+                    descripcion: descripcion 
+                };
+                
+                // Asegurarse de tener la versión más reciente antes de subir
+                await cargarListaPosts(false); // Carga sin renderizar aún
+                
+                postsGlobales.unshift(nuevoPost); // Añadir al inicio
 
-                // Actualizar servidor
                 const actualizar = await fetch(API_BIN_URL, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
+                        'X-Master-Key': API_KEY,
+                        'X-Bin-Versioning': 'false' // Evita llenar el servidor de historial basura
                     },
                     body: JSON.stringify(postsGlobales)
                 });
@@ -207,18 +288,21 @@
 
                 mostrarMensaje('✅ ¡Post creado exitosamente!', 'exito');
                 form.reset();
-                renderizarListaPosts(); // Actualizar la lista visualmente
+                vistaPreviaDiv.style.display = 'none';
+                renderizarListaPosts();
             } catch (error) {
                 console.error(error);
                 mostrarMensaje('❌ Error: ' + error.message, 'error');
+                // Revertir array en caso de error
+                postsGlobales.shift(); 
             } finally {
                 btnSubmit.disabled = false;
                 btnSubmit.textContent = 'PUBLICAR POST';
             }
         });
 
-        // NUEVA FUNCIÓN: CARGAR POSTS DESDE EL SERVIDOR
-        async function cargarListaPosts() {
+        // --- CARGAR Y GESTIONAR POSTS ---
+        async function cargarListaPosts(render = true) {
             try {
                 const respuesta = await fetch(API_BIN_URL, {
                     headers: { 'X-Master-Key': API_KEY }
@@ -227,17 +311,20 @@
                 
                 const datos = await respuesta.json();
                 postsGlobales = datos.record || [];
-                renderizarListaPosts();
+                
+                if (render) renderizarListaPosts();
             } catch (error) {
-                document.getElementById('listaPosts').innerHTML = '<p style="color: #ef4444; text-align:center;">Error al cargar los posts.</p>';
+                console.error(error);
+                if (render) {
+                    document.getElementById('listaPosts').innerHTML = '<p style="color: #ef4444; text-align:center;">Error al cargar los posts.</p>';
+                }
             }
         }
 
-        // NUEVA FUNCIÓN: DIBUJAR LOS POSTS EN PANTALLA
         function renderizarListaPosts() {
             const contenedor = document.getElementById('listaPosts');
             
-            if (postsGlobales.length === 0) {
+            if (!postsGlobales || postsGlobales.length === 0) {
                 contenedor.innerHTML = '<p style="text-align: center; color: #9ca3af;">No hay posts publicados todavía.</p>';
                 return;
             }
@@ -251,42 +338,49 @@
                         <h4>${escapeHtmlUI(post.titulo)}</h4>
                         <p>${escapeHtmlUI(post.descripcion)}</p>
                     </div>
-                    <button class="btn-eliminar" onclick="eliminarPost(${index}, this)">Eliminar</button>
+                    <button class="btn-eliminar" data-index="${index}">Eliminar</button>
                 `;
                 contenedor.appendChild(item);
             });
+
+            // Asignar eventos a los botones eliminar
+            document.querySelectorAll('.btn-eliminar').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const idx = parseInt(btn.getAttribute('data-index'));
+                    await eliminarPost(idx, btn);
+                });
+            });
         }
 
-        // NUEVA FUNCIÓN: ELIMINAR POST
         async function eliminarPost(index, btnElement) {
-            const confirmar = confirm('¿Estás seguro de que deseas eliminar este post? Esta acción no se puede deshacer.');
+            const confirmar = confirm('¿Estás seguro de que deseas eliminar este post?');
             if (!confirmar) return;
 
             btnElement.disabled = true;
-            btnElement.textContent = '⏳...';
+            btnElement.textContent = '⏳ Borrando...';
 
             try {
-                // Clonar array y remover el elemento
+                // Asegurarse de tener la data más reciente
+                await cargarListaPosts(false);
+                
                 const nuevosPosts = [...postsGlobales];
-                nuevosPosts.splice(index, 1);
+                nuevosPosts.splice(index, 1); // Quitar el post
 
-                // Enviar nueva lista al servidor
                 const actualizar = await fetch(API_BIN_URL, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
+                        'X-Master-Key': API_KEY,
+                        'X-Bin-Versioning': 'false' // Evitar historial basura
                     },
                     body: JSON.stringify(nuevosPosts)
                 });
 
-                if (!actualizar.ok) throw new Error('Error al actualizar el servidor');
+                if (!actualizar.ok) throw new Error('Error al actualizar la base de datos');
 
-                // Si tiene éxito, actualizar variable global y re-dibujar
                 postsGlobales = nuevosPosts;
                 renderizarListaPosts();
                 mostrarMensaje('🗑️ Post eliminado correctamente.', 'exito');
-
             } catch (error) {
                 console.error(error);
                 mostrarMensaje('❌ Error al eliminar el post.', 'error');
@@ -295,24 +389,25 @@
             }
         }
 
+        // --- UTILIDADES ---
         function mostrarMensaje(texto, tipo) {
             mensajeDiv.textContent = texto;
-            mensajeDiv.classList.add(tipo);
+            mensajeDiv.className = `mensaje ${tipo}`;
             mensajeDiv.style.display = 'block';
             setTimeout(() => {
                 mensajeDiv.style.display = 'none';
-                mensajeDiv.classList.remove(tipo);
+                mensajeDiv.className = 'mensaje';
             }, 5000);
         }
 
-        // Utilidad para evitar inyección de código en los títulos de la lista
         function escapeHtmlUI(texto) {
+            if (!texto) return '';
             const div = document.createElement('div');
             div.textContent = texto;
             return div.innerHTML;
         }
 
-        // Iniciar cargando la lista
+        // Iniciar
         cargarListaPosts();
     </script>
 </body>
