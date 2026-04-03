@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Crear Post</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0e;
+            font-family: 'Poppins', sans-serif;
+            color: #f3f4f6;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .form-container {
+            max-width: 600px;
+            width: 100%;
+            background: #0f1219;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        h1 { font-size: 1.8rem; margin-bottom: 10px; background: linear-gradient(90deg, #fff, #9ca3af); -webkit-background-clip: text; color: transparent; }
+        p { color: #9ca3af; margin-bottom: 30px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; margin-top: 20px; }
+        input, textarea {
+            width: 100%;
+            background: #111824;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            font-size: 1rem;
+            resize: vertical;
+        }
+        input:focus, textarea:focus { outline: none; border-color: #0ea5e9; }
+        button {
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            padding: 14px 30px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 30px;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .mensaje {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        .exito { background: rgba(34,197,94,0.2); border: 1px solid #22c55e; color: #4ade80; }
+        .error { background: rgba(239,68,68,0.2); border: 1px solid #ef4444; color: #f87171; }
+        hr { border-color: rgba(255,255,255,0.05); margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>➕ Nuevo Post</h1>
+        <p>Agrega un lanzamiento a la página principal <strong>profilebio.me</strong></p>
+
+        <form id="formPost">
+            <label>Título del post:</label>
+            <input type="text" id="titulo" placeholder="Ej: Mi nuevo video" required>
+
+            <label>Código HTML de la imagen/contenido:</label>
+            <textarea id="codigoHtml" rows="3" placeholder='<img src="URL" alt="imagen">' required></textarea>
+
+            <label>Descripción:</label>
+            <textarea id="descripcion" rows="4" placeholder="Describe el contenido del post..." required></textarea>
+
+            <button type="submit">PUBLICAR POST</button>
+        </form>
+
+        <div id="mensajeRespuesta" class="mensaje"></div>
+    </div>
+
+    <script>
+        const BIN_ID = '69cff65d856a682189f868bf';
+        const API_KEY = '$2a$10$QzNa.Zj4OfVuzJpLx92t4eNgS1Yh/6UU5nsFuyXJKyxrkh8swx8IC';
+        const API_BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+        const form = document.getElementById('formPost');
+        const mensajeDiv = document.getElementById('mensajeRespuesta');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            mensajeDiv.style.display = 'none';
+            mensajeDiv.className = 'mensaje';
+
+            const titulo = document.getElementById('titulo').value.trim();
+            const imagen = document.getElementById('codigoHtml').value.trim();
+            const descripcion = document.getElementById('descripcion').value.trim();
+
+            if (!titulo || !imagen || !descripcion) {
+                mostrarMensaje('Todos los campos son obligatorios', 'error');
+                return;
+            }
+
+            try {
+                // 1. Obtener posts actuales
+                const respuesta = await fetch(API_BIN_URL, {
+                    headers: { 'X-Master-Key': API_KEY }
+                });
+                if (!respuesta.ok) throw new Error('No se pudo leer la base de datos');
+                
+                const datos = await respuesta.json();
+                const postsActuales = datos.record || [];
+
+                // 2. Agregar nuevo post (el campo "imagen" ahora lleva el HTML puro)
+                const nuevoPost = { titulo, imagen, descripcion };
+                postsActuales.unshift(nuevoPost);
+
+                // 3. Actualizar el bin
+                const actualizar = await fetch(API_BIN_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': API_KEY
+                    },
+                    body: JSON.stringify(postsActuales)
+                });
+
+                if (!actualizar.ok) throw new Error('Error al guardar en el servidor');
+
+                mostrarMensaje('✅ ¡Post creado exitosamente! El código HTML se ha publicado.', 'exito');
+                form.reset();
+            } catch (error) {
+                console.error(error);
+                mostrarMensaje('❌ Error: ' + error.message, 'error');
+            }
+        });
+
+        function mostrarMensaje(texto, tipo) {
+            mensajeDiv.textContent = texto;
+            mensajeDiv.classList.add(tipo);
+            mensajeDiv.style.display = 'block';
+            setTimeout(() => {
+                mensajeDiv.style.display = 'none';
+                mensajeDiv.classList.remove(tipo);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
